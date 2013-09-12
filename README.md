@@ -42,6 +42,6 @@ Change SST (snapshot state transfer) method to xtrabackup and set auth credentia
 default["percona"]["cluster"]["wsrep_sst_method"]               = "xtrabackup"
 default["percona"]["cluster"]["wsrep_sst_auth"]                 = "sstuser:s3cretPass"
 ```
-3) Add the configure_cluster_server.rb to the runlist
+3) Add the configure_cluster_server.rb to the chef runlist
 
 * NB KR - check if eth0 in template and recipe file
