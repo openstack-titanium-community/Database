@@ -1,3 +1,0 @@
-[submodule "cookbooks/chef-percona"]
-	path = cookbooks/chef-percona
-	url = https://github.com/rochfordk/chef-percona.git
