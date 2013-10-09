@@ -1,0 +1,16 @@
+
+%input#proposal_attributes{:type => "hidden", :name => "proposal_attributes", :value => @proposal.raw_data['attributes'][@proposal.barclamp].to_json}
+%p
+  %label{:for => "proposal_attributes"}= t('.attributes')
+  = link_to t('raw'), proposal_barclamp_path(:id => @proposal.name, :controller => @proposal.barclamp, :dep_raw => @dep_raw, :attr_raw => true), :style => "float: right;"
+  %div.container
+    %p
+      %label{ :for => :wsrep_cluster_address }= t('.wsrep_cluster_address')
+      %input#wsrep_cluster_address{:type => "text", :name => "wsrep_cluster_address", :'data-default' => @proposal.raw_data['attributes'][@proposal.barclamp]["wsrep_cluster_address"], :onchange => "update_value('wsrep_cluster_address','wsrep_cluster_address', 'string')"}
+    %p
+      %label{ :for => :wsrep_cluster_name }= t('.wsrep_cluster_name')
+      %input#wsrep_cluster_name{:type => "text", :name => "wsrep_cluster_name", :'data-default' => @proposal.raw_data['attributes'][@proposal.barclamp]["wsrep_cluster_name"], :onchange => "update_value('wsrep_cluster_name','wsrep_cluster_name', 'string')"}
+    %p
+      %label{ :for => :wsrep_sst_auth }= t('.wsrep_sst_auth')
+      %input#wsrep_sst_auth{:type => "text", :name => "wsrep_sst_auth", :'data-default' => @proposal.raw_data['attributes'][@proposal.barclamp]["wsrep_sst_auth"], :onchange => "update_value('wsrep_sst_auth','wsrep_sst_auth', 'string')"}
+
