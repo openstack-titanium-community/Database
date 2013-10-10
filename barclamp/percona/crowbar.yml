@@ -34,9 +34,6 @@ locale_additions:
       percona:
         edit_attributes:
           attributes: Attributes
-          wsrep_cluster_address: Cluster Address
-          wsrep_cluster_name: Cluster Name
-          wsrep_sst_auth: SST Authorisation  
         edit_deployment:
           deployment: Deployment
 

@@ -12,9 +12,7 @@
           "type": "map",
           "required": true,
           "mapping": {
-            "wsrep_cluster_address": { "type": "str", "required": true},
-			"wsrep_cluster_name": { "type": "str", "required": true},
-			"wsrep_sst_auth": { "type": "str", "required": true}
+            "update_origins": { "type": "bool", "required": true }
           }
         }
       }

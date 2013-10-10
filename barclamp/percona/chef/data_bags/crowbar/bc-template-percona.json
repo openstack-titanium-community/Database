@@ -1,11 +1,9 @@
 {
   "id": "bc-template-percona",
-  "description": "provides a Percona installation",
+  "description": "provides a percona installation",
   "attributes": {
     "percona": {
-      "wsrep_cluster_address": "gcomm://10.49.75.10,10.49.75.11.10.49.75.12",
-      "wsrep_cluster_name": "OMPC",
-      "wsrep_sst_auth": "sstuser:s3cretPass"	  
+      "update_origins": false
     }
   },
   "deployment": {
