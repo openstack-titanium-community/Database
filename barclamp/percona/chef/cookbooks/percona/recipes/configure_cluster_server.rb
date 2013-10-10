@@ -5,6 +5,18 @@ mysqld  = (conf && conf["mysqld"]) || {}
 firstnode = false
 headnode = ""
 
+# get ip addresses - Barclamp proposal needs to be coded and not hard coded
+getdbip_db = data_bag_item('crowbar', 'bc-percona-proposal')
+dbcont1 = getdbip_db["deployment"]["percona"]["elements"]["percona"][0]
+dbcont2 = getdbip_db["deployment"]["percona"]["elements"]["percona"][1]
+dbcont3 = getdbip_db["deployment"]["percona"]["elements"]["percona"][2]
+cont_db = data_bag_item('crowbar', 'admin_network')
+cont1_admin_ip = cont_db["allocated_by_name"]["#{dbcont1}"]["address"]
+cont2_admin_ip = cont_db["allocated_by_name"]["#{dbcont2}"]["address"]
+cont3_admin_ip = cont_db["allocated_by_name"]["#{dbcont3}"]["address"]
+gcommaddr = "gcomm://" +  cont1_admin_ip + "," + cont2_admin_ip + "," + cont3_admin_ip
+
+
 # construct an encrypted passwords helper -- giving it the node and bag name
 passwords = EncryptedPasswords.new(node, percona["encrypted_data_bag"])
 
@@ -38,13 +50,14 @@ service "mysql" do
   
   #If this is the first node we'll change the start and resatart commands to take advantage of the bootstrap-pxc command
   #Get the cluster address and extract the first node IP
-  cluster_address = node["percona"]["cluster"]["wsrep_cluster_address"].dup
-  cluster_address.slice! "gcomm://"
-  cluster_nodes = cluster_address.split(',')
-  headnode = cluster_nodes[0] 
+
+  #cluster_address = node["percona"]["cluster"]["wsrep_cluster_address"].dup
+  #cluster_address.slice! "gcomm://"
+  #cluster_nodes = cluster_address.split(',')
+  headnode = cont1_admin_ip 
   localipaddress= Chef::Recipe::Barclamp::Inventory.get_network_by_type(node, "admin").address 
   # localipaddress=  node["network"]["interfaces"]["eth0"]["addresses"].select {|address, data| data["family"] == "inet" }.first.first
-  if cluster_nodes[0] == localipaddress
+  if cont1_admin_ip == localipaddress
 	firstnode = true
 	start_command "/usr/bin/service mysql bootstrap-pxc" #if platform?("ubuntu")
 	restart_command "/usr/bin/service mysql stop && /usr/bin/service mysql bootstrap-pxc" #if platform?("ubuntu")
@@ -76,12 +89,20 @@ execute "setup mysql datadir" do
   not_if "test -f #{datadir}/mysql/user.frm"
 end
 
+log.warn("my.cnf.#{conf ? "custom" : server["role"]}.erb")
+
+
 # setup the main server config file
 template percona["main_config_file"] do
   source "my.cnf.#{conf ? "custom" : server["role"]}.erb"
   owner "root"
   group "root"
-  mode 0744
+  mode "0744"
+  variables( {
+    "gcommaddr" => gcommaddr
+  } )
+
+
   # If this is not the first node wait until the first node becomes available before restarting the service
   if firstnode
 	notifies :restart, "service[mysql]", :immediately if node["percona"]["auto_restart"]

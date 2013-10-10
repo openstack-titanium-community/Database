@@ -55,7 +55,7 @@ net_read_timeout = <%= node["percona"]["server"]["net_read_timeout"] %>
 #
 binlog_format                  = <%= node["percona"]["cluster"]["binlog_format"] %>
 wsrep_provider                 = <%= node["percona"]["cluster"]["wsrep_provider"] %>
-wsrep_cluster_address          = <%= node["percona"]["cluster"]["wsrep_cluster_address"] %>
+wsrep_cluster_address          = <%= @gcommaddr %>
 wsrep_slave_threads            = <%= node["percona"]["cluster"]["wsrep_slave_threads"] %>
 wsrep_cluster_name             = <%= node["percona"]["cluster"]["wsrep_cluster_name"] %>
 wsrep_sst_method               = <%= node["percona"]["cluster"]["wsrep_sst_method"] %>
@@ -68,8 +68,6 @@ wsrep_node_name             = <%= node['hostname'] %>
 <% if !node["percona"]["cluster"]["wsrep_node_address"].empty? %>
 wsrep_node_address             = <%= node["percona"]["cluster"]["wsrep_node_address"] %>
 <% else %> #try to obtain the local IP using Ohai
-#wsrep_node_address             = <%= node['ipaddress'] %>
-#wsrep_node_address             = <%=  node["network"]["interfaces"]["eth0"]["addresses"].select {|address, data| data["family"] == "inet" }.first.first%>
 wsrep_node_address             = <%=  Chef::Recipe::Barclamp::Inventory.get_network_by_type(node, "admin").address%>
 <% end %>
 innodb_locks_unsafe_for_binlog = <%= node["percona"]["cluster"]["innodb_locks_unsafe_for_binlog"] %>
