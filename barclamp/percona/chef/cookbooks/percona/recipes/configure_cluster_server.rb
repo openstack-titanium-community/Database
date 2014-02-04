@@ -89,8 +89,6 @@ execute "setup mysql datadir" do
   not_if "test -f #{datadir}/mysql/user.frm"
 end
 
-log.warn("my.cnf.#{conf ? "custom" : server["role"]}.erb")
-
 
 # setup the main server config file
 template percona["main_config_file"] do
